@@ -1,0 +1,65 @@
+drop database University_Admission_System;
+
+create database University_Admission_System;
+
+use University_Admission_System;
+
+delete from mysql.proc;
+
+create table programs_offered(program_name varchar(50), description varchar(700),
+applicant_eligibility varchar(40) , duration_in_months int(3), degree_certificate_offered varchar(50), img_url varchar(500),
+PRIMARY KEY (program_name));
+
+create table programs_scheduled( scheduled_program_id varchar(15),
+program_name varchar(50), location varchar(10), start_date date, end_date date,
+sessions_per_week int(2), PRIMARY KEY(scheduled_program_id),
+FOREIGN KEY (program_name) REFERENCES programs_offered(program_name));
+
+create table application(application_id int(8), full_name varchar(30), date_of_birth date,
+highest_qualification varchar(10), marks_obtained float(5,2), email_id varchar(50),
+scheduled_program_id varchar(15), status varchar(10), date_of_interview date, PRIMARY KEY (application_id),
+UNIQUE (email_id),FOREIGN KEY (scheduled_program_id) REFERENCES programs_scheduled(scheduled_program_id));
+
+create table Participant (roll_no varchar(5), email_id varchar(50), application_id varchar(6) , scheduled_program_id varchar(10),
+PRIMARY KEY(roll_no), FOREIGN KEY (application_id) REFERENCES application(application_id));
+
+create table users (username varchar(10), password varchar(30), role varchar(6),
+PRIMARY KEY(username));
+
+insert into users values('manu','manu','admin');
+insert into users values('member1','password123','member');
+insert into users values('member2','test123','member');
+
+insert into programs_offered values('Electrical and Electronic Engineering','Electrical engineering deals design, develop, test, and supervise the manufacturing of electrical equipment, such as electric motors, radar and navigation systems, communications systems, or power generation equipment.','12th or Diploma in EEE',18,'BE in Electrical & Electronics Engineering','http://www.indiaeducation.net/imagesvr_ce/9763/electrical.jpg');
+insert into programs_offered values('Electronics and Communication Engineering','Electronics engineering deals design, develop and test components, devices, systems or equipment that use electricity as part of their source of power. These components include capacitors, diodes, resistors and transistors.','12th or Diploma in ECE',18,'BE in Electronics & Communication Engineering','https://www.ecs.soton.ac.uk/sites/www.ecs.soton.ac.uk/files/ECS-embedded-system-boxgrid-480x297.png');
+insert into programs_offered values('Civil Engineering','Civil engineering deals with the plan, design, construction, and maintenance of the physical and naturally built environment, including public works such as roads, bridges, canals, dams, airports, sewerage systems, pipelines, structural components of buildings, and railways.','12th or Diploma in Civil',18,'BE in Civil Engineering','http://www.ravanchal.com/wp-content/uploads/2018/04/outsource-civil-engineering-services.jpg');
+insert into programs_offered values('Mechanical Engineering','Understand the core areas including mechanics, dynamics, thermodynamics, materials science, structural analysis, and electricity.','12th or Diploma in Mechanical',18,'BE in Mechanical Engineering','https://www.jabil.com/content/dam/images/hero-images/20170428-cap-mechanical-design.png.transform/pageHero/image.20170428-cap-mechanical-design.jpg');
+
+insert into programs_scheduled values('ee12','Electrical and Electronic Engineering','Bangalore','2019-06-12','2019-07-12',2);
+insert into programs_scheduled values('ec19ma1','Electronics and Communication Engineering','Bangalore','2019-06-12','2019-07-12',2);
+
+insert into application values(1,'Manoj Kumar', '1995-3-16', 'Diploma', 65.65, 'manu@gmail.com', 'ee12dv1','Pending',null);
+
+ALTER TABLE `university_admission_system`.`application` CHANGE COLUMN `application_id` `application_id` INT(8) NOT NULL AUTO_INCREMENT  ;
+
+delimiter &
+CREATE PROCEDURE getAllProgramsName()
+BEGIN
+SELECT * FROM programs_offered;
+END &
+delimiter ;
+
+delimiter &
+CREATE PROCEDURE getAllScheduledPrograms()
+BEGIN
+SELECT * FROM programs_scheduled;
+END &
+delimiter ;
+
+delimiter &
+CREATE PROCEDURE getAllApplications()
+BEGIN
+SELECT * FROM application;
+END &
+delimiter ;
+
